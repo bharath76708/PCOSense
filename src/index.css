@@ -1,0 +1,385 @@
+@import "tailwindcss";
+
+@theme {
+  --color-sage: #6B9E78;
+  --color-sage-50: #F5F9F6;
+  --color-sage-100: #E8F2EA;
+  --color-sage-200: #D2E4D6;
+  --color-sage-300: #B3D1BA;
+  --color-sage-400: #8FB899;
+  --color-sage-500: #6B9E78;
+  --color-sage-600: #578463;
+  --color-sage-700: #45694F;
+  --color-sage-800: #35513D;
+  --color-sage-900: #263D32;
+  --color-sage-950: #182821;
+
+  --color-softpink: #E8A6B8;
+  --color-softpink-50: #FCF6F8;
+  --color-softpink-100: #F8EDF1;
+  --color-softpink-200: #F2D8E0;
+  --color-softpink-300: #E8A6B8;
+  --color-softpink-400: #DE8EA3;
+  --color-softpink-500: #CE7089;
+  --color-softpink-600: #B4536E;
+  --color-softpink-700: #923F55;
+
+  --color-lavender: #9B7EBD;
+  --color-lavender-50: #F8F6FB;
+  --color-lavender-100: #F1ECF7;
+  --color-lavender-200: #DFD3EC;
+  --color-lavender-300: #C7B4DC;
+  --color-lavender-400: #AF96CC;
+  --color-lavender-500: #9B7EBD;
+  --color-lavender-600: #8464A8;
+  --color-lavender-700: #6C4E8F;
+
+  --color-warmwhite: #FAFAF7;
+  --color-deepgreen: #263D32;
+  --color-healthy: #E8F2EA;
+  --color-warningamber: #FFF4DF;
+  --color-errorred: #D96C75;
+
+  /* Theme harmonization: Map teal/emerald to Sage Green family */
+  --color-teal-50: #F5F9F6;
+  --color-teal-100: #E8F2EA;
+  --color-teal-200: #D2E4D6;
+  --color-teal-300: #B3D1BA;
+  --color-teal-400: #8FB899;
+  --color-teal-500: #6B9E78;
+  --color-teal-600: #578463;
+  --color-teal-700: #45694F;
+  --color-teal-800: #35513D;
+  --color-teal-900: #263D32;
+  --color-teal-950: #182821;
+
+  --color-emerald-50: #F5F9F6;
+  --color-emerald-100: #E8F2EA;
+  --color-emerald-200: #D2E4D6;
+  --color-emerald-300: #B3D1BA;
+  --color-emerald-400: #8FB899;
+  --color-emerald-500: #6B9E78;
+  --color-emerald-600: #578463;
+  --color-emerald-700: #45694F;
+  --color-emerald-800: #35513D;
+  --color-emerald-900: #263D32;
+  --color-emerald-950: #182821;
+
+  /* Map purple to Lavender #9B7EBD family */
+  --color-purple-50: #F8F6FB;
+  --color-purple-100: #F1ECF7;
+  --color-purple-200: #DFD3EC;
+  --color-purple-300: #C7B4DC;
+  --color-purple-400: #AF96CC;
+  --color-purple-500: #9B7EBD;
+  --color-purple-600: #8464A8;
+  --color-purple-700: #6C4E8F;
+  --color-purple-800: #573E73;
+  --color-purple-900: #442E5E;
+  --color-purple-950: #271939;
+
+  /* Map pink to Soft Pink #E8A6B8 family */
+  --color-pink-50: #FCF6F8;
+  --color-pink-100: #F8EDF1;
+  --color-pink-200: #F2D8E0;
+  --color-pink-300: #E8A6B8;
+  --color-pink-400: #DE8EA3;
+  --color-pink-500: #CE7089;
+  --color-pink-600: #B4536E;
+  --color-pink-700: #923F55;
+  --color-pink-800: #783244;
+  --color-pink-900: #5F2635;
+  --color-pink-950: #3D121F;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Professional Healthcare & Women's Wellness Palette Defaults */
+html {
+  background-color: #FAFAF7;
+  color: #263D32;
+}
+
+body {
+  background-color: #FAFAF7;
+  color: #263D32;
+  font-family: 'Inter', 'Noto Sans Telugu', 'Gautami', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark html,
+html.dark,
+html.dark body {
+  background-color: #142019 !important;
+  color: #E8F2EA !important;
+}
+
+/* Card classes */
+.wellness-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E5E9E4;
+  color: #263D32;
+}
+.dark .wellness-card {
+  background-color: #1C2B22;
+  border-color: #2C3E33;
+  color: #E8F2EA;
+}
+
+/* Healthcare Status Cards */
+.card-healthy {
+  background-color: #E8F2EA !important;
+  border: 1px solid #C8DEC3 !important;
+  color: #263D32 !important;
+}
+.dark .card-healthy {
+  background-color: #1A3022 !important;
+  border: 1px solid #2D4C37 !important;
+  color: #E8F2EA !important;
+}
+
+.card-warning {
+  background-color: #FFF4DF !important;
+  border: 1px solid #F1DCB0 !important;
+  color: #6C4405 !important;
+}
+.dark .card-warning {
+  background-color: #33240D !important;
+  border: 1px solid #5A4016 !important;
+  color: #FFE6B3 !important;
+}
+
+.card-error {
+  background-color: #FDF2F3 !important;
+  border: 1px solid #F6CAD0 !important;
+  color: #9E2B35 !important;
+}
+.dark .card-error {
+  background-color: #36171B !important;
+  border: 1px solid #5C272E !important;
+  color: #F8C3CA !important;
+}
+
+/* Primary buttons with Sage Green #6B9E78 */
+.btn-sage-primary {
+  background-color: #6B9E78;
+  color: #FFFFFF;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+.btn-sage-primary:hover {
+  background-color: #578463;
+}
+.btn-sage-primary:active {
+  background-color: #45694F;
+}
+
+/* Secondary Accents: Soft Pink & Lavender */
+.badge-softpink {
+  background-color: #F8EDF1;
+  color: #923F55;
+  border: 1px solid #F2D8E0;
+}
+.dark .badge-softpink {
+  background-color: #381B24;
+  color: #F2D8E0;
+  border-color: #5A2B3A;
+}
+
+.badge-lavender {
+  background-color: #F1ECF7;
+  color: #6C4E8F;
+  border: 1px solid #DFD3EC;
+}
+.dark .badge-lavender {
+  background-color: #2D1D3E;
+  color: #DFD3EC;
+  border-color: #4C3268;
+}
+
+/* Custom scrollbars for dark mode */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #142019;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #2b3d32;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #405747;
+}
+
+/* HIGH CONTRAST ACCESSIBILITY MODE */
+html.high-contrast {
+  --hc-border: 2px solid #000000;
+}
+
+html.high-contrast.dark {
+  --hc-border: 2px solid #ffffff;
+}
+
+html.high-contrast button,
+html.high-contrast a,
+html.high-contrast input,
+html.high-contrast select,
+html.high-contrast textarea {
+  border-width: 2px !important;
+}
+
+html.high-contrast *:focus-visible {
+  outline: 3px solid #000000 !important;
+  outline-offset: 3px !important;
+}
+
+html.high-contrast.dark *:focus-visible {
+  outline: 3px solid #ffffff !important;
+  outline-offset: 3px !important;
+}
+
+html.high-contrast.dark {
+  background-color: #000000 !important;
+}
+
+html.high-contrast.dark .bg-slate-900,
+html.high-contrast.dark .bg-slate-950,
+html.high-contrast.dark .bg-slate-800 {
+  background-color: #000000 !important;
+  border-color: #ffffff !important;
+}
+
+html.high-contrast:not(.dark) {
+  background-color: #ffffff !important;
+}
+
+html.high-contrast:not(.dark) .bg-white,
+html.high-contrast:not(.dark) .bg-slate-50,
+html.high-contrast:not(.dark) .bg-slate-100 {
+  background-color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+/* Text Comfort Accessibility Mode */
+html.text-comfort {
+  font-size: 18px !important;
+}
+
+html.text-comfort h1 {
+  font-size: 1.15em !important;
+}
+
+html.text-comfort p, 
+html.text-comfort span, 
+html.text-comfort button, 
+html.text-comfort input, 
+html.text-comfort select {
+  line-height: 1.6 !important;
+}
+
+/* Easy-Read Mode - Enhanced Legibility & Visual Breathing Room */
+html.easy-read {
+  letter-spacing: 0.015em;
+}
+
+html.easy-read p,
+html.easy-read li {
+  line-height: 1.65 !important;
+  max-width: 75ch;
+}
+
+html.high-contrast {
+  filter: contrast(1.1);
+}
+
+html.high-contrast:not(.dark) {
+  --tw-border-opacity: 1;
+}
+
+/* BROWSER-NATIVE CLINICAL PRINT FORMATTING */
+@media print {
+  /* Ensure backgrounds and colors print accurately */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Force white background and black text on body */
+  body {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 12pt;
+    line-height: 1.4;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Hide all unnecessary navigation, action controls, toggles, sidebars, headers, and chat widgets */
+  nav,
+  aside,
+  header,
+  footer,
+  #sidebar,
+  #app-navbar,
+  #app-footer,
+  #global-chat-drawer,
+  #ai-assistant-drawer,
+  .no-print,
+  button:not(.print-include),
+  [data-no-print="true"] {
+    display: none !important;
+  }
+
+  /* Adjust page margins */
+  @page {
+    margin: 15mm 15mm 20mm 15mm;
+    size: A4 portrait;
+  }
+
+  /* Avoid awkward page breaks inside clinical cards and tables */
+  .clinical-print-card,
+  .break-inside-avoid,
+  table,
+  tr {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Make containers fill full page width cleanly without scrolling */
+  .max-w-5xl,
+  .max-w-7xl,
+  .container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Flatten dark backgrounds into clean white with crisp dark borders for paper */
+  .dark {
+    color-scheme: light !important;
+  }
+
+  .dark * {
+    color: #0f172a !important;
+    background-color: transparent !important;
+  }
+
+  .print-clinical-box {
+    border: 1.5px solid #0f172a !important;
+    border-radius: 8px !important;
+    background-color: #f8fafc !important;
+    padding: 12px 16px !important;
+  }
+}
+
+

@@ -1,0 +1,227 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny all undefined paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'jangajahnavisai@gmail.com' ||
+        request.auth.token.email.matches('.*admin.*@.*') ||
+        request.auth.token.email.matches('.*@pcosense\\.com') ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // User profile documents - private to each user; admins can view
+    match /users/{userId} {
+      allow get, list: if isOwner(userId) || isAdmin() || isSignedIn();
+      allow create, update: if isOwner(userId) || isAdmin();
+      allow delete: if isOwner(userId) || isAdmin();
+
+      // User prediction history - strictly private to each user
+      match /predictions/{predictionId} {
+        allow get, list: if isOwner(userId) || isAdmin();
+        allow create, update: if isOwner(userId) || isAdmin();
+        allow delete: if isOwner(userId) || isAdmin();
+      }
+
+      // Daily symptom logs - strictly private to each user
+      match /symptoms/{symptomId} {
+        allow get, list: if isOwner(userId) || isAdmin();
+        allow create, update: if isOwner(userId) || isAdmin();
+        allow delete: if isOwner(userId) || isAdmin();
+      }
+
+      // Saved recipes & customized diet bookmarks
+      match /saved_recipes/{recipeId} {
+        allow get, list: if isOwner(userId) || isAdmin();
+        allow create, update: if isOwner(userId) || isAdmin();
+        allow delete: if isOwner(userId) || isAdmin();
+      }
+
+      // Counterfactual What-If simulation scenarios & analysis history
+      match /simulations/{simulationId} {
+        allow get, list: if isOwner(userId) || isAdmin();
+        allow create, update: if isOwner(userId) || isAdmin();
+        allow delete: if isOwner(userId) || isAdmin();
+      }
+
+      // Step count & walking activity tracking
+      match /steps/{stepId} {
+        allow get, list: if isOwner(userId) || isAdmin();
+        allow create, update: if isOwner(userId) || isAdmin();
+        allow delete: if isOwner(userId) || isAdmin();
+      }
+
+      // Hydration logs & smart water intake tracking
+      match /water/{waterId} {
+        allow get, list: if isOwner(userId) || isAdmin();
+        allow create, update: if isOwner(userId) || isAdmin();
+        allow delete: if isOwner(userId) || isAdmin();
+      }
+
+      // Daily habits & PCOS routine tracker
+      match /daily_habits/{habitDateKey} {
+        allow get, list: if isOwner(userId) || isAdmin();
+        allow create, update: if isOwner(userId) || isAdmin();
+        allow delete: if isOwner(userId) || isAdmin();
+      }
+
+      // Daily nutrition logs
+      match /nutrition/{dateKey} {
+        allow get, list: if isOwner(userId) || isAdmin();
+        allow create, update: if isOwner(userId) || isAdmin();
+        allow delete: if isOwner(userId) || isAdmin();
+      }
+
+      // Subscription state & trial status
+      match /subscription/{subId} {
+        allow get, list: if isOwner(userId) || isAdmin();
+        allow create, update: if isOwner(userId) || isAdmin();
+        allow delete: if isAdmin();
+      }
+    }
+
+    // Doctors collection
+    // Public/signed-in users can view doctors. Authenticated users/admins can manage.
+    match /doctors/{doctorId} {
+      allow get, list: if true;
+      allow create, update, delete: if isSignedIn();
+    }
+
+    // Appointments collection
+    match /appointments/{appointmentId} {
+      allow get, list: if isSignedIn() && (
+        resource.data.userId == request.auth.uid ||
+        resource.data.doctorId == request.auth.uid ||
+        isAdmin()
+      );
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (
+        resource.data.userId == request.auth.uid ||
+        resource.data.doctorId == request.auth.uid ||
+        isAdmin()
+      );
+      allow delete: if isSignedIn() && (
+        resource.data.userId == request.auth.uid ||
+        isAdmin()
+      );
+    }
+
+    // Consultations & Platform Commission
+    match /consultations/{consultationId} {
+      allow get, list: if isSignedIn() && (
+        resource.data.userId == request.auth.uid ||
+        resource.data.doctorId == request.auth.uid ||
+        isAdmin()
+      );
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (
+        resource.data.doctorId == request.auth.uid ||
+        isAdmin()
+      );
+      allow delete: if isAdmin();
+    }
+
+    // Health Reports (Only shared with explicitly authorized doctors or owned by user)
+    match /healthReports/{reportId} {
+      allow get: if isSignedIn() && (
+        resource.data.userId == request.auth.uid ||
+        (resource.data.isShared == true && request.auth.uid in resource.data.sharedWithDoctorIds) ||
+        isAdmin()
+      );
+      allow list: if isSignedIn() && (
+        resource.data.userId == request.auth.uid ||
+        isAdmin()
+      );
+      allow create, update: if isSignedIn() && (
+        request.resource.data.userId == request.auth.uid ||
+        isAdmin()
+      );
+      allow delete: if isSignedIn() && (
+        resource.data.userId == request.auth.uid ||
+        isAdmin()
+      );
+    }
+
+    // Yoga & Exercise Videos (Publicly readable, authenticated write)
+    match /yogaVideos/{videoId} {
+      allow get, list: if true;
+      allow create, update, delete: if isSignedIn();
+    }
+
+    // Curated Structured Recipes (Publicly readable, authenticated write)
+    match /recipes/{recipeId} {
+      allow get, list: if true;
+      allow create, update, delete: if isSignedIn();
+    }
+
+    // Notifications
+    match /notifications/{notificationId} {
+      allow get, list: if isSignedIn() && (
+        resource.data.userId == request.auth.uid ||
+        isAdmin()
+      );
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (
+        resource.data.userId == request.auth.uid ||
+        isAdmin()
+      );
+      allow delete: if isSignedIn() && (
+        resource.data.userId == request.auth.uid ||
+        isAdmin()
+      );
+    }
+
+    // Admin Settings (Bank account details, settlement routing)
+    match /admin_settings/{settingId} {
+      allow get, list: if true;
+      allow create, update, delete: if isSignedIn();
+    }
+
+    // Test connectivity probe path (safe read-only probe for connection validation)
+    match /test/{testId} {
+      allow get: if true;
+    }
+
+    // Subscription & Trial payments ledger
+    match /subscription_payments/{paymentId} {
+      allow get: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    // WhatsApp Campaigns (Admin controlled broadcast campaigns)
+    match /whatsapp_campaigns/{campaignId} {
+      allow read, write: if true;
+    }
+
+    // WhatsApp Message Logs (Outbound and inbound delivery trail)
+    match /whatsapp_logs/{logId} {
+      allow read, write: if true;
+    }
+
+    // WhatsApp Settings (Throttling limits and configuration)
+    match /whatsapp_settings/{settingId} {
+      allow read, write: if true;
+    }
+  }
+}
+

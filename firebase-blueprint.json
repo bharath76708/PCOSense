@@ -1,0 +1,528 @@
+{
+  "entities": {
+    "userProfile": {
+      "title": "UserProfile",
+      "description": "User profile with personal medical history and assessment preferences",
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "description": "Unique user ID matching Auth UID"
+        },
+        "full_name": {
+          "type": "string",
+          "description": "Full name of the user"
+        },
+        "email": {
+          "type": "string",
+          "description": "User email address"
+        },
+        "role": {
+          "type": "string",
+          "description": "Account role: user, doctor, or admin",
+          "enum": ["user", "doctor", "admin"]
+        },
+        "doctorId": {
+          "type": "string",
+          "description": "Linked doctor profile identifier if role is doctor"
+        },
+        "profile_completed": {
+          "type": "boolean",
+          "description": "Whether baseline profile setup has been finished"
+        },
+        "completion_percentage": {
+          "type": "number",
+          "description": "Profile completion percentage (0-100)"
+        },
+        "patientData": {
+          "type": "object",
+          "description": "Standard clinical input values"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "Last update ISO timestamp"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "Creation ISO timestamp"
+        }
+      },
+      "required": [
+        "user_id",
+        "email"
+      ]
+    },
+    "predictionRecord": {
+      "title": "PredictionRecord",
+      "description": "PCOS risk assessment prediction results and input snapshots",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique prediction identifier (e.g. PCO-XXXXX)"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Firebase Auth UID of the patient"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "ISO timestamp of prediction execution"
+        },
+        "dateFormatted": {
+          "type": "string",
+          "description": "Formatted human-readable date"
+        },
+        "probability": {
+          "type": "number",
+          "description": "Calculated PCOS risk percentage (0-100)"
+        },
+        "risk_level": {
+          "type": "string",
+          "description": "Stratified risk category: Low, Moderate, or High"
+        },
+        "prediction": {
+          "type": "number",
+          "description": "Binary classification: 0 (No PCOS) or 1 (Elevated Risk)"
+        },
+        "bmi": {
+          "type": "number",
+          "description": "Calculated BMI at time of assessment"
+        },
+        "cycleStatus": {
+          "type": "string",
+          "description": "Menstrual cycle regularity status"
+        },
+        "follicleCountRight": {
+          "type": "number",
+          "description": "Follicle count in right ovary"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Clinical or user assessment notes"
+        },
+        "inputSnapshot": {
+          "type": "object",
+          "description": "All 41 patient metrics supplied during the assessment"
+        },
+        "keyDrivers": {
+          "type": "array",
+          "description": "Top SHAP / regression risk contributors"
+        },
+        "model_name": {
+          "type": "string",
+          "description": "Name and calibration of ML model used"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "timestamp"
+      ]
+    },
+    "symptomLog": {
+      "title": "SymptomLog",
+      "description": "Daily logged patient symptoms and lifestyle indicators",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "dateFormatted": { "type": "string" },
+        "dateKey": { "type": "string" },
+        "cycleDay": { "type": "number" },
+        "menstrualFlow": { "type": "string" },
+        "pelvicPain": { "type": "number" },
+        "bloating": { "type": "number" },
+        "fatigue": { "type": "number" },
+        "acne": { "type": "number" },
+        "headaches": { "type": "number" },
+        "hirsutismFlare": { "type": "boolean" },
+        "hairLossNoticed": { "type": "boolean" },
+        "moodSwings": { "type": "number" },
+        "anxiety": { "type": "number" },
+        "brainFog": { "type": "number" },
+        "sleepQuality": { "type": "string" },
+        "sleepHours": { "type": "number" },
+        "sugarCravings": { "type": "number" },
+        "exerciseMinutes": { "type": "number" },
+        "waterIntakeLiters": { "type": "number" },
+        "fastFoodConsumed": { "type": "boolean" },
+        "notes": { "type": "string" },
+        "overallSeverityScore": { "type": "number" },
+        "physicalScore": { "type": "number" },
+        "emotionalScore": { "type": "number" }
+      },
+      "required": ["id", "userId", "timestamp", "dateKey"]
+    },
+    "savedRecipe": {
+      "title": "SavedRecipe",
+      "description": "Bookmarked anti-PCOS meals and customized recipes",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "mealType": { "type": "string" },
+        "calories": { "type": "number" },
+        "proteinGrams": { "type": "number" },
+        "fiberGrams": { "type": "number" },
+        "savedAt": { "type": "string" }
+      },
+      "required": ["id", "name"]
+    },
+    "simulationScenario": {
+      "title": "SimulationScenario",
+      "description": "Saved What-If counterfactual scenario analyses",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "baselineProbability": { "type": "number" },
+        "simulatedProbability": { "type": "number" },
+        "deltaProbability": { "type": "number" },
+        "direction": { "type": "string" },
+        "changedFeatures": { "type": "array" }
+      },
+      "required": ["id", "timestamp"]
+    },
+    "stepRecord": {
+      "title": "StepRecord",
+      "description": "Daily walking step count, distance, and calorie expenditure",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "dateKey": { "type": "string" },
+        "steps": { "type": "number" },
+        "distanceKm": { "type": "number" },
+        "caloriesBurned": { "type": "number" },
+        "activeMinutes": { "type": "number" },
+        "goalSteps": { "type": "number" },
+        "lastUpdated": { "type": "string" }
+      },
+      "required": ["id", "userId", "dateKey", "steps"]
+    },
+    "hydrationRecord": {
+      "title": "HydrationRecord",
+      "description": "Daily water consumption and hydration log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "dateKey": { "type": "string" },
+        "totalMl": { "type": "number" },
+        "targetMl": { "type": "number" },
+        "glassesConsumed": { "type": "number" },
+        "lastDrunkAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "dateKey", "totalMl"]
+    },
+    "dailyHabitRecord": {
+      "title": "DailyHabitRecord",
+      "description": "Daily PCOS wellness habit tracking checklist and consistency record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "dateKey": { "type": "string" },
+        "habits": { "type": "object" },
+        "completedCount": { "type": "number" },
+        "totalHabitsCount": { "type": "number" },
+        "completionRate": { "type": "number" },
+        "streakCount": { "type": "number" },
+        "lastUpdated": { "type": "string" }
+      },
+      "required": ["id", "userId", "dateKey", "habits"]
+    },
+    "doctorProfile": {
+      "title": "DoctorProfile",
+      "description": "Doctor credentials, specialization, fee, availability and verification status",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "qualification": { "type": "string" },
+        "specialization": { "type": "string" },
+        "experienceYears": { "type": "number" },
+        "clinic": { "type": "string" },
+        "location": { "type": "string" },
+        "consultationFee": { "type": "number" },
+        "verificationStatus": { "type": "string" }
+      },
+      "required": ["id", "name", "specialization", "consultationFee", "verificationStatus"]
+    },
+    "appointmentRecord": {
+      "title": "AppointmentRecord",
+      "description": "Consultation appointment bookings between patients and verified specialists",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "doctorId": { "type": "string" },
+        "doctorName": { "type": "string" },
+        "appointmentDate": { "type": "string" },
+        "timeSlot": { "type": "string" },
+        "amount": { "type": "number" },
+        "status": { "type": "string" },
+        "paymentStatus": { "type": "string" }
+      },
+      "required": ["id", "userId", "doctorId", "appointmentDate", "timeSlot", "status"]
+    },
+    "consultationRecord": {
+      "title": "ConsultationRecord",
+      "description": "Completed clinical consultation, platform commission breakdown and clinical notes",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "doctorId": { "type": "string" },
+        "appointmentId": { "type": "string" },
+        "amount": { "type": "number" },
+        "commissionPercentage": { "type": "number" },
+        "commissionAmount": { "type": "number" },
+        "doctorAmount": { "type": "number" },
+        "completedAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "doctorId", "appointmentId", "amount", "commissionAmount"]
+    },
+    "healthReportRecord": {
+      "title": "HealthReportRecord",
+      "description": "Comprehensive user screening and lifestyle health summary shared with doctor",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "generatedAt": { "type": "string" },
+        "screeningSummary": { "type": "object" },
+        "isShared": { "type": "boolean" },
+        "sharedWithDoctorIds": { "type": "array" }
+      },
+      "required": ["id", "userId", "userName", "generatedAt"]
+    },
+    "yogaVideoRecord": {
+      "title": "YogaVideoRecord",
+      "description": "Curated yoga and physical exercise movement video with YouTube embed",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "youtubeVideoId": { "type": "string" },
+        "duration": { "type": "string" },
+        "category": { "type": "string" },
+        "difficulty": { "type": "string" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["id", "title", "youtubeVideoId", "category"]
+    },
+    "recipeRecord": {
+      "title": "RecipeRecord",
+      "description": "Curated PCOS-specific recipe with verified structured micronutrient values",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "mealType": { "type": "string" },
+        "prepTime": { "type": "string" },
+        "servingSize": { "type": "string" },
+        "nutrition": { "type": "object" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["id", "name", "mealType", "nutrition"]
+    },
+    "adminBankSettings": {
+      "title": "AdminBankSettings",
+      "description": "Master banking and settlement account for routing subscription and commission payments",
+      "type": "object",
+      "properties": {
+        "accountHolderName": { "type": "string" },
+        "bankName": { "type": "string" },
+        "accountNumber": { "type": "string" },
+        "ifscCode": { "type": "string" },
+        "upiId": { "type": "string" },
+        "branchName": { "type": "string" },
+        "updatedAt": { "type": "string" },
+        "updatedBy": { "type": "string" }
+      },
+      "required": ["accountHolderName", "bankName", "accountNumber", "ifscCode", "upiId"]
+    },
+    "subscriptionPaymentRecord": {
+      "title": "SubscriptionPaymentRecord",
+      "description": "Ledger of all subscription payments routed to admin bank account",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "userName": { "type": "string" },
+        "plan": { "type": "string" },
+        "planName": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string" },
+        "expiryDate": { "type": "string" },
+        "transactionRef": { "type": "string" },
+        "paymentMode": { "type": "string" },
+        "status": { "type": "string" },
+        "depositedToAccount": { "type": "string" }
+      },
+      "required": ["id", "userId", "plan", "amount", "transactionRef", "status"]
+    },
+    "userSubscriptionRecord": {
+      "title": "UserSubscriptionRecord",
+      "description": "User active subscription plan state and expiration",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "userName": { "type": "string" },
+        "tier": { "type": "string" },
+        "status": { "type": "string" },
+        "amountPaid": { "type": "number" },
+        "startDate": { "type": "string" },
+        "expiryDate": { "type": "string" },
+        "transactionRef": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "daysRemaining": { "type": "number" }
+      },
+      "required": ["userId", "tier", "status", "startDate", "expiryDate"]
+    },
+    "whatsappCampaign": {
+      "title": "WhatsAppCampaign",
+      "description": "Admin WhatsApp awareness and educational broadcast campaign",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "campaign_name": { "type": "string" },
+        "target_audience": { "type": "string" },
+        "language": { "type": "string" },
+        "message_type": { "type": "string" },
+        "message_content": { "type": "string" },
+        "schedule": { "type": "string" },
+        "start_date": { "type": "string" },
+        "end_date": { "type": "string" },
+        "status": { "type": "string" },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" }
+      },
+      "required": ["id", "campaign_name", "message_content", "status"]
+    },
+    "whatsappMessageLog": {
+      "title": "WhatsAppMessageLog",
+      "description": "Log of outbound and inbound WhatsApp messages with delivery and opt-in tracking",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "messageType": { "type": "string" },
+        "content": { "type": "string" },
+        "language": { "type": "string" },
+        "direction": { "type": "string" },
+        "status": { "type": "string" },
+        "whatsappMessageId": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "phoneNumber", "content", "direction", "status", "timestamp"]
+    },
+    "whatsappConfig": {
+      "title": "WhatsAppConfig",
+      "description": "System-wide WhatsApp configuration and frequency throttling settings",
+      "type": "object",
+      "properties": {
+        "max_messages_per_user_weekly": { "type": "number" },
+        "business_phone_number_id": { "type": "string" },
+        "business_account_id": { "type": "string" },
+        "verify_token": { "type": "string" },
+        "updated_at": { "type": "string" }
+      },
+      "required": ["max_messages_per_user_weekly"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "userProfile",
+      "description": "User medical profiles"
+    },
+    "/users/{userId}/subscription/{subId}": {
+      "schema": "userSubscriptionRecord",
+      "description": "Active user subscription tier and status"
+    },
+    "/users/{userId}/predictions/{predictionId}": {
+      "schema": "predictionRecord",
+      "description": "PCOS risk assessments"
+    },
+    "/users/{userId}/symptoms/{symptomId}": {
+      "schema": "symptomLog",
+      "description": "Daily symptom records"
+    },
+    "/users/{userId}/saved_recipes/{recipeId}": {
+      "schema": "savedRecipe",
+      "description": "Saved recipes and meal plans"
+    },
+    "/users/{userId}/simulations/{simulationId}": {
+      "schema": "simulationScenario",
+      "description": "Saved What-If simulations"
+    },
+    "/users/{userId}/steps/{stepId}": {
+      "schema": "stepRecord",
+      "description": "Walking and step activity tracking"
+    },
+    "/users/{userId}/water/{waterId}": {
+      "schema": "hydrationRecord",
+      "description": "Daily hydration logs and alerts"
+    },
+    "/users/{userId}/daily_habits/{dateKey}": {
+      "schema": "dailyHabitRecord",
+      "description": "Daily PCOS habit check-offs and streaks"
+    },
+    "/doctors/{doctorId}": {
+      "schema": "doctorProfile",
+      "description": "Doctor directory and verification profiles"
+    },
+    "/appointments/{appointmentId}": {
+      "schema": "appointmentRecord",
+      "description": "Patient specialist appointment bookings"
+    },
+    "/consultations/{consultationId}": {
+      "schema": "consultationRecord",
+      "description": "Completed consultations and platform commission records"
+    },
+    "/healthReports/{reportId}": {
+      "schema": "healthReportRecord",
+      "description": "Authorized patient health reports"
+    },
+    "/yogaVideos/{videoId}": {
+      "schema": "yogaVideoRecord",
+      "description": "PCOS exercise and yoga videos"
+    },
+    "/recipes/{recipeId}": {
+      "schema": "recipeRecord",
+      "description": "Verified nutrition recipes"
+    },
+    "/admin_settings/{settingId}": {
+      "schema": "adminBankSettings",
+      "description": "Admin configuration and bank account details"
+    },
+    "/subscription_payments/{paymentId}": {
+      "schema": "subscriptionPaymentRecord",
+      "description": "Recorded subscription and trial payments"
+    },
+    "/whatsapp_campaigns/{campaignId}": {
+      "schema": "whatsappCampaign",
+      "description": "Admin WhatsApp awareness and educational campaigns"
+    },
+    "/whatsapp_logs/{logId}": {
+      "schema": "whatsappMessageLog",
+      "description": "Audit trail and delivery logs for WhatsApp messages"
+    },
+    "/whatsapp_settings/{settingId}": {
+      "schema": "whatsappConfig",
+      "description": "WhatsApp automation throttling and configuration parameters"
+    }
+  }
+}

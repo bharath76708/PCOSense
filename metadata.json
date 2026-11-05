@@ -1,0 +1,6 @@
+{
+  "name": "PCOSense",
+  "description": "An explainable machine-learning-based risk screening, 7-day personalized diet plan with 7-day nutrient gap analysis, meal prep time notification alerts, Recharts macro radar breakdown, nearby organic grocery & farmers' market locator, and clinical PCOS Wellness hub.",
+  "requestFramePermissions": ["microphone", "geolocation", "camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
